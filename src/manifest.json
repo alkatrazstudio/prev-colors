@@ -1,0 +1,46 @@
+{
+    "manifest_version": 2,
+    "name": "Previous Colors",
+    "description": "Allows to quickly select one of the previous font colors.",
+    "version": "",
+    "author": "ZXED",
+    "applications": {
+        "gecko": {
+            "id": "previous-colors@alkatrazstudio.net",
+            "strict_min_version": "68.0"
+        }
+    },
+    "experiment_apis": {
+        "prevColors": {
+            "schema": "api/schema.json",
+            "parent": {
+                "scopes": [
+                    "addon_parent"
+                ],
+                "paths": [[
+                    "prevColors"
+                ]],
+                "script": "api/api.js"
+            }
+        }
+    },
+    "background": {
+        "scripts": [
+            "lib.js",
+            "background.js"
+        ]
+    },
+    "compose_action": {
+        "browser_style": true,
+        "default_area": "formattoolbar",
+        "default_popup": "popup/popup.html",
+        "default_title": "Previous Colors",
+        "default_icon":  "icons/btn.png"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "icons": {
+        "48": "icons/btn.png"
+    }
+}

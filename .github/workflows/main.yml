@@ -1,0 +1,55 @@
+name: Build
+
+
+on:
+  push:
+    branches:
+    - master
+
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    container: ubuntu:20.04
+
+    steps:
+    - name: Bootstrap
+      run: |
+        set -ex
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get -y update > /dev/null
+        apt-get -y install git > /dev/null
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
+    - name: Set version var
+      id: set_version
+      run: echo ::set-output name=addon_version::"$(scripts/get-next-version.sh)"
+
+    - name: Build
+      run: scripts/ci-build.sh "${{ steps.set_version.outputs.addon_version }}"
+
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.set_version.outputs.addon_version }}
+        release_name: v${{ steps.set_version.outputs.addon_version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: prev-colors.xpi
+        asset_name: prev-colors-v${{ steps.set_version.outputs.addon_version }}.xpi
+        asset_content_type: application/x-xpinstall

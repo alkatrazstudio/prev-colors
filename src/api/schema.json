@@ -1,0 +1,31 @@
+
+[{
+    "namespace": "prevColors",
+    "functions": [{
+        "name": "setTextColor",
+        "description": "Change the current text color or set the color of the selection",
+        "type": "function",
+        "async": true,
+        "parameters": [{
+            "name": "color",
+            "description": "Color code.",
+            "type": "string"
+        }]
+    }, {
+        "name": "getLastTextColor",
+        "description": "Get the last color that was set by a user.",
+        "type": "function",
+        "async": true,
+        "parameters": []
+    }],
+    "events": [{
+        "name": "onLastTextColorChanged",
+        "type": "function",
+        "description": "Raised when a user changes the color via the color selection dialog.",
+        "parameters": [{
+            "name": "color",
+            "description": "The selected color.",
+            "type": "string"
+        }]
+    }]
+}]
