@@ -15,14 +15,9 @@ The source code for the add-on is located in the `src` folder.
 
 Scripts in the `scripts` folder:
 
-* `get-next-version.sh` - get the next version number of the add-on based on git tags.
-  You need `git` installed.
+* `build.sh` - build the add-on.
 
-* `build.sh [VERSION]` - build the add-on with specified version `VERSION`.
-  You need `jq` (https://stedolan.github.io/jq/) and `zip` installed.
-  If the version is not specified, it will be taken from `get-next-version.sh`.
-
-* `ci-build.sh` - build scripts for running inside Ubuntu container.
+* `ci-build.sh` - build the add-on inside Ubuntu container.
 
 
 Refer to the official Thunderbird add-on developer tutorial
