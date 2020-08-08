@@ -18,6 +18,10 @@ jobs:
       with:
         persist-credentials: false
 
+    - name: Version
+      id: version
+      run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+
     - name: Build
       run: scripts/ci-build.sh
 
@@ -27,8 +31,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
+        tag_name: ${{ steps.version.outputs.version }}
+        release_name: ${{ steps.version.outputs.version }}
 
     - name: Upload
       uses: actions/upload-release-asset@v1
@@ -37,5 +41,5 @@ jobs:
       with:
         upload_url: ${{ steps.release.outputs.upload_url }}
         asset_path: prev-colors.xpi
-        asset_name: prev-colors-${{ github.ref }}.xpi
+        asset_name: prev-colors-${{ steps.version.outputs.version }}.xpi
         asset_content_type: application/x-xpinstall
