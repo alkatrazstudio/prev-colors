@@ -1,5 +1,4 @@
 const {ExtensionCommon} = ChromeUtils.import('resource://gre/modules/ExtensionCommon.jsm')
-const {Services} = ChromeUtils.import('resource://gre/modules/Services.jsm')
 const {ExtensionSupport} = ChromeUtils.import('resource:///modules/ExtensionSupport.jsm')
 
 
@@ -33,8 +32,7 @@ function registerOnColorPicker(context)
 
     ExtensionSupport.registerWindowListener(context.extension.addonData.id, {
         chromeURLs: [
-            'chrome://editor/content/EdColorPicker.xul', // TB 68
-            'chrome://messenger/content/messengercompose/EdColorPicker.xhtml' // TB 78
+            'chrome://messenger/content/messengercompose/EdColorPicker.xhtml'
         ],
         onLoadWindow() {
             colorBefore = getLastTextColor()
