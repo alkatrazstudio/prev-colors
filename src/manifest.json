@@ -1,13 +1,13 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Previous Colors",
     "description": "Allows to quickly select one of the previous font colors.",
     "version": "1.2",
     "author": "ZXED",
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "previous-colors@alkatrazstudio.net",
-            "strict_min_version": "68.0"
+            "strict_min_version": "128.0"
         }
     },
     "experiment_apis": {
@@ -31,7 +31,6 @@
         ]
     },
     "compose_action": {
-        "browser_style": true,
         "default_area": "formattoolbar",
         "default_popup": "popup/popup.html",
         "default_title": "Previous Colors",

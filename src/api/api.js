@@ -1,40 +1,26 @@
-const {ExtensionCommon} = ChromeUtils.import('resource://gre/modules/ExtensionCommon.jsm')
-const {Services} = ChromeUtils.import('resource://gre/modules/Services.jsm')
-const {ExtensionSupport} = ChromeUtils.import('resource:///modules/ExtensionSupport.jsm')
-
+const {ExtensionCommon} = ChromeUtils.importESModule('resource://gre/modules/ExtensionCommon.sys.mjs')
+const {ExtensionSupport} = ChromeUtils.importESModule('resource:///modules/ExtensionSupport.sys.mjs')
 
 const EXTENSION_NAME = 'prevColors'
 const DEFAULT_COLOR = '#000000'
+const LISTENER_ID = 'prevColors.EdColorPicker'
 
 const onLastTextColorChangedCallbacks = []
-const listenerRegistrations = []
+let needRegister = true
 
-
-function unregisterOnColorPicker(context)
+function registerOnColorPicker()
 {
-    const i = listenerRegistrations.findIndex(r => r.context === context)
-    if(i !== -1)
-        listenerRegistrations.splice(i, 1)
-
-    if(listenerRegistrations.length)
-        return
-
-    ExtensionSupport.unregisterWindowListener(context.extension.addonData.id)
-}
-
-function registerOnColorPicker(context)
-{
-    const needRegister = !listenerRegistrations.length
-
-    listenerRegistrations.push({context})
-
     if(!needRegister)
         return
+    needRegister = false
 
-    ExtensionSupport.registerWindowListener(context.extension.addonData.id, {
+    try {
+        ExtensionSupport.unregisterWindowListener(LISTENER_ID)
+    } catch(e) {
+    }
+    ExtensionSupport.registerWindowListener(LISTENER_ID, {
         chromeURLs: [
-            'chrome://editor/content/EdColorPicker.xul', // TB 68
-            'chrome://messenger/content/messengercompose/EdColorPicker.xhtml' // TB 78
+            'chrome://messenger/content/messengercompose/EdColorPicker.xhtml'
         ],
         onLoadWindow() {
             colorBefore = getLastTextColor()
@@ -54,9 +40,9 @@ function registerOnColorPicker(context)
     })
 }
 
-function registerOnLastTextColorChanged(context, callback)
+function registerOnLastTextColorChanged(callback)
 {
-    registerOnColorPicker(context)
+    registerOnColorPicker()
     onLastTextColorChangedCallbacks.push(callback)
     return () => {
         const index = onLastTextColorChangedCallbacks.indexOf(callback)
@@ -90,15 +76,17 @@ function getLastTextColor()
     return color || DEFAULT_COLOR
 }
 
-
-this[EXTENSION_NAME] = class extends ExtensionCommon.ExtensionAPI {
-    getAPI(context) {
-        context.callOnClose({
-            close() {
-                unregisterOnColorPicker(context)
+this[EXTENSION_NAME] = class extends ExtensionCommon.ExtensionAPIPersistent {
+    PERSISTENT_EVENTS = {
+        onLastTextColorChanged({ fire }) {
+            return {
+                unregister: registerOnLastTextColorChanged(value => fire.async(value)),
+                convert: fireToExtensionCallback => fire = fireToExtensionCallback
             }
-        })
+        }
+    }
 
+    getAPI(context) {
         return {
             [EXTENSION_NAME]: {
                 setTextColor,
@@ -106,8 +94,9 @@ this[EXTENSION_NAME] = class extends ExtensionCommon.ExtensionAPI {
 
                 onLastTextColorChanged: new ExtensionCommon.EventManager({
                     context,
-                    name: 'onLastTextColorChanged',
-                    register: fire => registerOnLastTextColorChanged(context, value => fire.async(value))
+                    module: EXTENSION_NAME,
+                    event: 'onLastTextColorChanged',
+                    extensionApi: this
                 }).api()
             }
         }
