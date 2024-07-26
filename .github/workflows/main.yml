@@ -9,37 +9,32 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    container: ubuntu:20.04
+    runs-on: ubuntu-24.04
+    container: ubuntu:24.04
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.1.7
       with:
         persist-credentials: false
 
     - name: Version
       id: version
-      run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+      run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
 
     - name: Build
       run: scripts/ci-build.sh
 
-    - name: Release
-      id: release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.version.outputs.version }}
-        release_name: ${{ steps.version.outputs.version }}
+    - name: Rename
+      run: mv prev-colors.xpi prev-colors-v${{ steps.version.outputs.version }}.xpi
 
-    - name: Upload
-      uses: actions/upload-release-asset@v1
+    - name: Notes
+      run: grep -Pzom1 "(?s)\n[##\s]*${{ steps.version.outputs.version }}.*?\n+.*?\K.*?(\n\n|$)" CHANGELOG.md | sed 's/[^[:print:]]//g' > RELEASE.md
+
+    - name: Release
+      uses: softprops/action-gh-release@v2.0.8
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.release.outputs.upload_url }}
-        asset_path: prev-colors.xpi
-        asset_name: prev-colors-${{ steps.version.outputs.version }}.xpi
-        asset_content_type: application/x-xpinstall
+        files: prev-colors-v${{ steps.version.outputs.version }}.xpi
+        body_path: RELEASE.md
