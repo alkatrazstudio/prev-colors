@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Previous Colors",
     "description": "Allows to quickly select one of the previous font colors.",
-    "version": "1.2",
+    "version": "2.0",
     "author": "ZXED",
     "browser_specific_settings": {
         "gecko": {
