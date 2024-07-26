@@ -22,7 +22,7 @@ Scripts in the `scripts` folder:
 
 Refer to the official Thunderbird add-on developer tutorial
 to learn what to do next:
-https://developer.thunderbird.net/add-ons/examples/hello-world-add-on
+https://developer.thunderbird.net/add-ons/hello-world-add-on
 
 
 ## Permissions
@@ -32,7 +32,7 @@ When installing the add-on the message might appear:
 > It requires your permission to:
 > - Have full, unrestricted access to Thunderbird, and your computer
 
-Technically, it's correct because this add-on uses WebExtension Experiments (https://thunderbird-webextensions.readthedocs.io/en/latest/how-to/experiments.html). This API is needed for the following things:
+Technically, it's correct because this add-on uses WebExtension Experiments (https://developer.thunderbird.net/add-ons/mailextensions/experiments). This API is needed for the following things:
 
 * Get and set the last used color.
 
@@ -54,7 +54,7 @@ Other than that, the add-on also requires `storage` permission for standard WebE
 ## Notes
 
 1. This add-on will work reliably only if the setting
-   "Options > General > Language & Appearance > Fonts & Colors > Colors > Override the colors specified by the content with my selections above"
+   "Menu > Settings > Language & Appearance > Fonts & Colors > Colors... > Override the colors specified by the content with my selections above"
    is set to "Never".
    Otherwise Thunderbird may take full control of the colors and won't allow to the user to choose the font color at all.
    The popup will also become blank because it relies on custom colors too.
