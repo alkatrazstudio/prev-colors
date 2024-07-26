@@ -26,7 +26,7 @@ jobs:
       run: scripts/ci-build.sh
 
     - name: Rename
-      run: mv prev-colors.xpi prev-colors-v${{ steps.version.outputs.version }}.xpi
+      run: mv prev-colors.xpi prev-colors-${{ steps.version.outputs.version }}.xpi
 
     - name: Notes
       run: grep -Pzom1 "(?s)\n[##\s]*${{ steps.version.outputs.version }}.*?\n+.*?\K.*?(\n\n|$)" CHANGELOG.md | sed 's/[^[:print:]]//g' > RELEASE.md
@@ -36,5 +36,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        files: prev-colors-v${{ steps.version.outputs.version }}.xpi
+        files: prev-colors-${{ steps.version.outputs.version }}.xpi
         body_path: RELEASE.md
