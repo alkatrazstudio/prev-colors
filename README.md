@@ -6,7 +6,7 @@ previously selected via "Choose color for text" dialog window.
 
 ![Screenshot of "Previous Colors" add-on](screenshot.png "Screenshot of \"Previous Colors\" add-on")
 
-This add-on is compatible with Thunderbird 68+.
+This add-on is compatible with Thunderbird 128+.
 
 
 ## How to build
